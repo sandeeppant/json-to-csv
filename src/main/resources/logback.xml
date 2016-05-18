@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true">
+  <contextName>jsontocsvconvertor</contextName>
+  <jmxConfigurator/>
+  <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>%d{MM/dd HH:mm:ss:SSS} [%t] %-5p %c - %m%n</pattern>
+    </encoder>
+  </appender>
+  <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>/var/log/cxteam/jsontocsvconvertor.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- daily rollover -->
+            <fileNamePattern>/var/log/cxteam/jsontocsvconvertor.%d{yyyy-MM-dd}.log</fileNamePattern>
+
+            <!-- keep 30 days' worth of history -->
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+
+        <encoder>
+            <pattern>%d{MM/dd HH:mm:ss.SSS} [%t] %-5p %c - %m%n</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="com.kronos.*" level="INFO" />
+
+  <root level="INFO">
+	<appender-ref ref="stdout"/>
+	<appender-ref ref="FILE"/>
+  </root>
+</configuration>
