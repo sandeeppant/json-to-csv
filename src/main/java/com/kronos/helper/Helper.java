@@ -281,8 +281,8 @@ public class Helper
     
     public static String putStringInQuotes(String value)
     {
-        value = Constants.QUOTE + value + Constants.QUOTE;
-        return value;
+        String newValue = Constants.QUOTE + value + Constants.QUOTE;
+        return newValue;
     }
     
     public static Map<String,String> getHypenColumnName(Map<Object, List<Object>> superMap)
