@@ -151,38 +151,34 @@ public class Helper
             String newKey = key.startsWith(Constants.AT_THE_RATE) ? key.substring(1) : key;
             Object value = mapObjEntry.getValue();
             
-            if(!key.startsWith(Constants.AT_THE_RATE))
+            if(!key.startsWith(Constants.AT_THE_RATE) && nestedColumnName!=null)
             {
-                if(nestedColumnName!=null)
+                for (Map.Entry<String, String> entry : nestedColumnName.entrySet())
                 {
-                    for (Map.Entry<String, String> entry : nestedColumnName.entrySet())
+                    String[] splitNestedColumn = entry.getValue().split(Constants.HYPEN);
+                    if(!splitNestedColumn[0].equals(key))
+                        continue;
+                    Map<Object, Object> map = new LinkedHashMap<Object, Object>();
+                    for(int i=1;i<splitNestedColumn.length-1;i++)
                     {
-                        String[] splitNestedColumn = entry.getValue().split(Constants.HYPEN);
-                        if(!splitNestedColumn[0].equals(key))
-                            continue;
-                        Map<Object, Object> map = new LinkedHashMap<Object, Object>();
-                        for(int i=1;i<splitNestedColumn.length-1;i++)
+                        if (mapObjEntry.getValue() instanceof Map)
                         {
-                            if (mapObjEntry.getValue() instanceof Map)
-                            {
-                                map = getValuesFromMap((Map<Object, Object>) mapObjEntry.getValue(),splitNestedColumn[i]);
-                            }
+                            map = getValuesFromMap((Map<Object, Object>) mapObjEntry.getValue(),splitNestedColumn[i]);
                         }
-                        for (Map.Entry<Object,Object> entry1 : map.entrySet())
+                    }
+                    for (Map.Entry<Object,Object> entry1 : map.entrySet())
+                    {
+                        if (entry1.getValue() instanceof String || entry1.getValue() instanceof Integer)
                         {
-                            if (entry1.getValue() instanceof String || entry1.getValue() instanceof Integer)
+                            String key1 = entry1.getKey().toString().startsWith(Constants.AT_THE_RATE) ? entry1.getKey().toString().substring(1) : entry1.getKey().toString();
+                            if(entry.getValue().split(Constants.HYPEN)[entry.getValue().split(Constants.HYPEN).length-1].equals(key1))
                             {
-                                String key1 = entry1.getKey().toString().startsWith(Constants.AT_THE_RATE) ? entry1.getKey().toString().substring(1) : entry1.getKey().toString();
-                                if(entry.getValue().split(Constants.HYPEN)[entry.getValue().split(Constants.HYPEN).length-1].equals(key1))
-                                {
-                                    value = entry1.getValue();
-                                    mapObjNew.put(entry.getKey(), value);
-                                    break;
-                                }
+                                value = entry1.getValue();
+                                mapObjNew.put(entry.getKey(), value);
+                                break;
                             }
                         }
                     }
-                    
                 }
             }
             mapObjNew.put(newKey, value);

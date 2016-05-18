@@ -33,29 +33,7 @@ public class JsonToCSVConvertor
         String template_path = ConfigurationMap.getProperty("template_path");
         String export_report_path = ConfigurationMap.getProperty("export_report_path");
         String output_path = ConfigurationMap.getProperty("output_path");
-        
-        if(template_path==null || export_report_path==null || output_path ==null)
-        {
-            System.exit(0);
-        }
-        System.out.println(template_path);
-        System.out.println(export_report_path);
-        System.out.println(output_path);
-        
-        //generatedCSV(template_path, export_report_path, output_path);
-        
-        /*if (args.length < 3)
-        {
-            System.out.println("Following Information is missing in command line: Template Path, Export Report Path and Output Path");
-            System.out.println("Example: D:\\CSV-Utility\\Template\\ D:\\CSV-Utility\\Report\\ D:\\CSV-Utility\\Template\\Output");
-        }
-        else
-        {
-            template_path = args[0];
-            export_report_path = args[1];
-            output_path = args[2];
-            generatedCSV(template_path, export_report_path, output_path);
-        }*/
+        generatedCSV(template_path, export_report_path, output_path);
     }
     
     @SuppressWarnings("unchecked")
@@ -69,13 +47,11 @@ public class JsonToCSVConvertor
             File[] directories = new File(template_path).listFiles(File::isDirectory);
             
             for(int fileNumber=0; fileNumber<directories.length; fileNumber++)
-            //for(int fileNumber=11; fileNumber<12; fileNumber++)
-            //for(int fileNumber=0; fileNumber<1; fileNumber++)
             {
-                if(!directories[fileNumber].getName().equals("NotificationProfile"))
+                /*if(!directories[fileNumber].getName().equals("NotificationProfile"))
                 {
                     continue;
-                }
+                }*/
                 
                 String dest_directory = output_path + Constants.BACK_SLASH + directories[fileNumber].getName() + Constants.BACK_SLASH;
                 
@@ -94,11 +70,9 @@ public class JsonToCSVConvertor
                 }
                 
                 File file = new File(dest_directory);
-                if (!file.exists()) 
+                if (!file.exists() && file.mkdirs()) 
                 {
-                    if (file.mkdirs()) 
-                    {
-                    } 
+                    LOGGER.debug("Creating following directory: "+dest_directory);
                 }
                 
                 FileUtils.cleanDirectory(file); 
