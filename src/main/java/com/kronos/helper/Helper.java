@@ -3,17 +3,21 @@ package com.kronos.helper;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -232,6 +236,10 @@ public class Helper
             {
                 recursive((Map<Object, Object>) entry.getValue(), finalMap, searchParam, parent);
             }
+            else if (entry.getValue() instanceof List<?>)
+            {
+                recursiveList((List<?>) entry.getValue(), finalMap, searchParam, parent);
+            }
         }
         return finalMap;
     }
@@ -327,6 +335,98 @@ public class Helper
             {
                 nestedList.add(new Attributes(parent,obj1.toString()));
             }
+        }
+    }
+    
+    public static void writeToNestedCSV( Map<Object,Map<Object,List<Attributes>>> nestedCSVMapwithHeader, String destDirectory)
+    {
+        try
+        {
+            for (Map.Entry<Object, Map<Object,List<Attributes>>> entry : nestedCSVMapwithHeader.entrySet())
+            {
+                FileWriter writer1 = new FileWriter(destDirectory + entry.getKey() + Constants.CSV_EXTENSION,true);
+                                
+                Map<Object,List<Attributes>> map1 = entry.getValue();
+                
+                Set<Object> uniqueKeys1 = new LinkedHashSet<Object>();
+                int sizeOfRecords = 0;
+                for (Map.Entry<Object,List<Attributes>> entry1 : map1.entrySet())
+                {
+                    uniqueKeys1.add(entry1.getKey());
+                    sizeOfRecords = entry1.getValue().size();
+                }
+                
+                String keys1 = StringUtils.join(uniqueKeys1, Constants.COMMA);
+                writer1.append(keys1);
+                writer1.append(Constants.NEW_LINE);
+    
+                for(int i=0;i<sizeOfRecords;i++)
+                {
+                    int j = 0;
+                    writer1.append((i+1)+Constants.COMMA);
+                    int size = uniqueKeys1.size();
+                    for(Object O : uniqueKeys1)
+                    {
+                        j++;
+                        
+                        if(O.equals(Constants.KEY) || O.equals(Constants.PARENT))
+                            continue;
+                        
+                        int parent = map1.get(O).get(i).getParent();
+                        String value = map1.get(O).get(i).getValue();
+                        
+                        if(j==3)
+                            writer1.append(parent+Constants.COMMA);
+                        
+                        value = value==null ? Constants.EMPTY_STRING : value;
+                        value = value.contains(Constants.COMMA) ? Helper.putStringInQuotes(value) : value;
+                        value = j!=size ? value+Constants.COMMA : value;
+                        
+                        writer1.append(value);
+                    }
+                    writer1.append(Constants.NEW_LINE);
+                }
+                writer1.flush();
+                writer1.close();
+            }
+        }
+        catch(IOException e)
+        {
+            LOGGER.error("IOException:", e);
+        }
+    }
+    
+    public static void writeToMainCSV(Map<Object, List<Object>> superMap, List<Object> lstOfMap, String destDirectory, String masterFileName)
+    {
+        try
+        {
+            Set<Object> keysFromTemplate = superMap.keySet();
+            String keys = StringUtils.join(keysFromTemplate, Constants.COMMA);
+            FileWriter writer = new FileWriter(destDirectory + masterFileName);
+            writer.append(keys);
+            writer.append(Constants.NEW_LINE);
+            
+            for(int i=0;i<lstOfMap.size();i++)
+            {
+                int j = 1;
+                int size = keysFromTemplate.size();
+                for(Object O : keysFromTemplate)
+                {
+                    String key = O.toString().startsWith(Constants.AT_THE_RATE) ? O.toString().substring(1) : O.toString();
+                    String value = superMap.get(key).get(i)!=null ? superMap.get(key).get(i).toString() : Constants.EMPTY_STRING;
+                    value = value.contains(Constants.COMMA) ? Helper.putStringInQuotes(value) : value;
+                    value = j!=size ? value+Constants.COMMA : value;
+                    writer.append(value);
+                    j++;
+                }
+                writer.append(Constants.NEW_LINE);
+            }
+            writer.flush();
+            writer.close();
+        }
+        catch(IOException e)
+        {
+            LOGGER.error("IOException:", e);
         }
     }
 }

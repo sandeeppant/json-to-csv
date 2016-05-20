@@ -13,7 +13,7 @@ public class Constants
     public static final String KEY = "Key";
     public static final String PARENT = "Parent";
     public static final String ITEMS_RETRIEVE_RESPONSES = "itemsRetrieveResponses";
-    public static final String RESPONSEOBJECTNODE = "responseObjectNode";
+    public static final String RESPONSE_OBJECT_NODE = "responseObjectNode";
     public static final String RESPONSE_JSON = "response.json";
     public static final String QUOTE = "\"";
 }
