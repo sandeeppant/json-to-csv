@@ -155,10 +155,73 @@ public class JsonToCSVConvertor
                     }
                 }
                 
-                /*List<Object> lstOfNestedMap = new LinkedList<Object>();
-                Map<Object, Map<Object,List<Object>>> finalMapdataz = new LinkedHashMap<Object, Map<Object,List<Object>>>(finalMap);*/
+                /**
+                 * This for loop is checking whether csv's are nested to parent to nested nested to each other - START
+                 */
+                Map<Object, Map<Object,List<Object>>> finalMapdataz = new LinkedHashMap<Object, Map<Object,List<Object>>>(finalMap);
+                Map<Object, Map<Object,List<Attributes>>> nestedCSVMapwithHeadertmp = new LinkedHashMap<Object, Map<Object,List<Attributes>>>(nestedCSVMapwithHeader);
                 
-                for (Map.Entry<Object, Map<Object,List<Object>>> entry2 : finalMap.entrySet())
+                for (Map.Entry<Object, Map<Object,List<Object>>> mapObjEntry1 : finalMap.entrySet())
+                {
+                    for (Map.Entry<Object, Map<Object,List<Object>>> mapObjEntry2 : finalMap.entrySet())
+                    {
+                        Object key1 = mapObjEntry1.getKey();
+                        Object key2 = mapObjEntry2.getKey();
+                        if(key1.equals(key2))
+                        {
+                            continue;
+                        }
+                        else
+                        {
+                            String value = mapObjEntry1.getValue().toString();
+                            if(value.contains("{"+key2.toString()+"="))
+                            {
+                                finalMapdataz.remove(key2);
+                                nestedCSVMapwithHeadertmp.remove(key1);
+                            }
+                        }
+                    }
+                }
+                
+                for (Map.Entry<Object, Map<Object,List<Attributes>>> mapObjEntry : nestedCSVMapwithHeadertmp.entrySet())
+                {
+                    for (Map.Entry<Object, Map<Object,List<Object>>> mapObjEntry1 : finalMapdataz.entrySet())
+                    {
+                        int parent = 1;
+                        for (Map.Entry<Object,List<Object>> mapObjEntry2 : mapObjEntry1.getValue().entrySet())
+                        {
+                            for (Object lst : mapObjEntry2.getValue())
+                            {
+                                if(lst instanceof List<?>)
+                                {
+                                    List<?> lst1 = (List<?>) lst;
+                                    for (Object lst2 : lst1)
+                                    {
+                                        if (lst2 instanceof Map)
+                                        {
+                                            Helper.recursive((Map<Object, Object>) lst2, finalMapdataz, mapObjEntry.getKey().toString(), parent);
+                                        }
+                                        else if (lst2 instanceof List<?>)
+                                        {
+                                            Helper.recursiveList((List<?>) lst2, finalMapdataz, mapObjEntry.getKey().toString(), parent);
+                                        }
+                                        parent++;
+                                    }
+                                }
+                                else if(lst instanceof Map)
+                                {
+                                    Helper.recursive((Map<Object, Object>) lst, finalMapdataz, mapObjEntry.getKey().toString(), parent);
+                                    parent++;
+                                }
+                            }
+                        }
+                    }
+                }
+                /**
+                 * This for loop is checking whether csv's are nested to parent to nested nested to each other - END
+                 */
+                
+                for (Map.Entry<Object, Map<Object,List<Object>>> entry2 : finalMapdataz.entrySet())
                 {
                     String nestedCSVFile = entry2.getKey().toString();
                     
