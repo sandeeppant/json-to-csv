@@ -3,7 +3,8 @@ package com.kronos.utils;
 public class Constants
 {
     public static final String COMMA = ",";
-    public static final String COLON = ":";
+    public static final String DOUBLE_ASTERISK = "**";
+    //public static final String COLON = ":";
     public static final String HYPEN = "-";
     public static final String EMPTY_STRING = "";
     public static final String CSV_EXTENSION = ".csv";
@@ -16,4 +17,6 @@ public class Constants
     public static final String RESPONSE_OBJECT_NODE = "responseObjectNode";
     public static final String RESPONSE_JSON = "response.json";
     public static final String QUOTE = "\"";
+    public static final String OPEN_CURLY_BRACKET = "{";
+    public static final String EUQAL_TO = "=";
 }

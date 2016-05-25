@@ -174,7 +174,7 @@ public class JsonToCSVConvertor
                         else
                         {
                             String value = mapObjEntry1.getValue().toString();
-                            if(value.contains("{"+key2.toString()+"="))
+                            if(value.contains(Constants.OPEN_CURLY_BRACKET+key2.toString()+Constants.EUQAL_TO))
                             {
                                 finalMapdataz.remove(key2);
                                 nestedCSVMapwithHeadertmp.remove(key1);

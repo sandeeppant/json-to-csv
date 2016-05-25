@@ -209,7 +209,7 @@ public class Helper
                     if (map.containsKey(entry1.getKey()))
                     {
                         Object value = map.get(entry1.getKey());
-                        value = value + Constants.COLON +entry1.getValue();
+                        value = value + Constants.DOUBLE_ASTERISK +entry1.getValue();
                         map.put(entry1.getKey(), value);
                     }
                     else
