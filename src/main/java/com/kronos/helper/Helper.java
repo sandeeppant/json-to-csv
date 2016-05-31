@@ -172,7 +172,7 @@ public class Helper
                     }
                     for (Map.Entry<Object,Object> entry1 : map.entrySet())
                     {
-                        if (entry1.getValue() instanceof String || entry1.getValue() instanceof Integer)
+                        if (entry1.getValue() instanceof String || entry1.getValue() instanceof Integer || entry1.getValue() instanceof Boolean)
                         {
                             String key1 = entry1.getKey().toString().startsWith(Constants.AT_THE_RATE) ? entry1.getKey().toString().substring(1) : entry1.getKey().toString();
                             if(entry.getValue().split(Constants.HYPEN)[entry.getValue().split(Constants.HYPEN).length-1].equals(key1))

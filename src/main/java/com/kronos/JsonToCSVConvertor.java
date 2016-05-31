@@ -4,11 +4,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
@@ -90,7 +88,6 @@ public class JsonToCSVConvertor
                 // read JSON from a file
                 Map<Object, Object> map = mapper.readValue(new File(jsonFile),new TypeReference<Map<Object, Object>>() {});
                 
-                Set<Object> nestedCSV = new LinkedHashSet<Object>();
                 List<Map<Object,Object>> obj = (List<Map<Object, Object>>) map.get(Constants.ITEMS_RETRIEVE_RESPONSES);
                 List<Object> lstOfMap = new LinkedList<Object>();
                 for (Object O : obj)
@@ -99,14 +96,6 @@ public class JsonToCSVConvertor
                     Map<Object, Object> O1 = (Map<Object, Object>)mapObj.get(Constants.RESPONSE_OBJECT_NODE);
                     Map<Object, Object> O2 = (Map<Object, Object>)O1.get(directories[fileNumber].getName());
                     lstOfMap.add(O2);
-                    for (Map.Entry<Object, Object> entry : O2.entrySet())
-                    {
-                        String key = entry.getKey().toString();
-                        if(!key.startsWith(Constants.AT_THE_RATE))
-                        {
-                            nestedCSV.add(key);
-                        }
-                    }
                 }
                 
                 //Main CSV
